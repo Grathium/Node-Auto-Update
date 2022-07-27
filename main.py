@@ -1,3 +1,6 @@
+import shlex
+import subprocess
+from importlib_metadata import version
 import requests
 import re
 import os
@@ -25,10 +28,9 @@ def installVersion(versionNumber):
 
     if (currentVersion != versionNumber):
         # install nvm version
-        os.system(f"nvm install {versionNumber}")
-
-        # use updated nvm version
-        os.system(f"nvm use {versionNumber}")
+        os.remove(f"node-v{versionNumber}-linux-x64.tar.gz")
+        os.system(f"wget https://nodejs.org/dist/v{versionNumber}/node-v{versionNumber}-linux-x64.tar.gz")
+        os.system(f"tar -xvzf node-v{versionNumber}-linux-x64.tar.gz")
     else:
         print("NodeJS is currently up to date")
 
