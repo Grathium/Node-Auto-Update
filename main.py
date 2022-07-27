@@ -6,7 +6,7 @@ import os
 from os.path import exists
 
 # get the most recent NodeJS version from the website
-def getNodeVersion():
+def getNodeVersion(LTS = False):
     r = requests.get('https://nodejs.org/en/download/releases/')
     if r.status_code == 200:
         try:
@@ -47,16 +47,24 @@ def installVersion(versionNumber):
 
 def printHelp():
     helpPage = """
-    Usage: python3 main.py [version]
-    Options for version: LTS
-                         latest
+    Help page for Python Auto Update (PAU)
+
+    Usage: python3 ./main.py [version]
+    Options for version: latest
                          [version number]
     """
 
     print(helpPage)
 
 if __name__ == "__main__":
-    nodeVersion = getNodeVersion()
+    if len(sys.argv) == 1:
+        printHelp()
+        exit()
+
+    if (sys.argv[1] == "latest"):
+        nodeVersion = getNodeVersion(LTS = True)
+    else:
+        nodeVersion = sys.argv[1]
 
     # check if the version could be fetched
     if (nodeVersion == 'Error'):
