@@ -131,3 +131,4 @@ dmypy.json
 # application specific
 *.tar.gz
 node-v*/
+*.json
