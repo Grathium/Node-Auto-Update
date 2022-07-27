@@ -1,5 +1,6 @@
 import requests
 import re
+import os
 
 # get the most recent NodeJS version from the website
 def getNodeVersion():
@@ -18,8 +19,18 @@ def getNodeVersion():
     else:
         return 'Error'
 
-def installVersion():
-    pass
+# install the most recent NodeJS version
+def installVersion(versionNumber):
+    currentVersion = os.popen(f"node --version").read()[1:]
+
+    if (currentVersion != versionNumber):
+        # install nvm version
+        os.system(f"nvm install {versionNumber}")
+
+        # use updated nvm version
+        os.system(f"nvm use {versionNumber}")
+    else:
+        print("NodeJS is currently up to date")
 
 if __name__ == "__main__":
     nodeVersion = getNodeVersion()
@@ -29,4 +40,5 @@ if __name__ == "__main__":
         print("Could not fetch NodeJS version")
         exit()
     
-    print(nodeVersion)
+    print(f"Installing NodeJS Version {nodeVersion}")
+    installVersion(nodeVersion)
