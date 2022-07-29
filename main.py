@@ -1,5 +1,4 @@
 import sys
-from importlib_metadata import version
 import requests
 import re
 import os
