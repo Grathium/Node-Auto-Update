@@ -26,10 +26,8 @@ def getNodeVersion(LTS = False):
         return 'Error'
 
 # install the most recent NodeJS version
-def installVersion(versionNumber, overwriteNode = False):
-    nodejsPATHExec = "node" if overwriteNode else "nodejs"
+def installVersion(versionNumber, nodejsPATHExec = "nodejs"):
     currentVersion = os.popen(f"{nodejsPATHExec} --version").read()[1:]
-
 
     if (currentVersion != versionNumber):
         # install nvm version
@@ -53,11 +51,13 @@ def installVersion(versionNumber, overwriteNode = False):
     else:
         print("NodeJS is currently up to date")
 
+# this is called when the user adds the --help flag
+# or does not call with a valid version
 def printHelp():
     helpPage = """
     Help page for Python Auto Update (PAU)
 
-    Usage: python3 ./main.py [version]
+    Usage: python3 ./main.py [version] [optional flags]
     Options for version: latest
                          [version number]
     
@@ -70,6 +70,10 @@ def printHelp():
     print(helpPage)
 
 if __name__ == "__main__":
+    # CLA argument defaults
+    shouldForce = 0
+    nodejsPATHExec = "nodejs"
+
     if len(sys.argv) == 1:
         printHelp()
         exit()
@@ -78,9 +82,11 @@ if __name__ == "__main__":
         nodeVersion = getNodeVersion(LTS = True)
     else:
         nodeVersion = sys.argv[1]
-    
-    shouldOverwriteNode = True if sys.argv[2] == "--overwrite-node" else False
-    shouldForce = True if sys.argv[3] == "--force" else False
+
+    if len(sys.argv) > 2:
+        nodejsPATHExec = "node" if sys.argv[2] == "--overwrite-node" else "nodejs"
+    if len(sys.argv) > 3:
+        shouldForce = True if sys.argv[3] == "--force" else False
 
     if (shouldForce):
         print("Using --force")
@@ -92,9 +98,9 @@ if __name__ == "__main__":
         exit()
     
     print(f"Installing NodeJS Version {nodeVersion}")
-    installVersion(nodeVersion, overwriteNode = shouldOverwriteNode)
+    installVersion(nodeVersion, nodejsPATHExec = nodejsPATHExec)
 
     print("")
     print("NodeJS installation complete")
     print("Installed as nodejs, check by running")
-    print("$ nodejs --version")
+    print(f"$ {nodejsPATHExec} --version")
