@@ -34,13 +34,13 @@ def installVersion(versionNumber, nodejsPATHExec = "nodejs"):
     # install nodejs version
     if currentVersion != versionNumber:
         # remove artifacts from previous installs
-        if fileExists(f"node-v{versionNumber}-linux-x64.tar.gz"):
-            remove(f"node-v{versionNumber}-linux-x64.tar.gz")
+        if fileExists(f"/tmp/node-v{versionNumber}-linux-x64.tar.gz"):
+            remove(f"/tmp/node-v{versionNumber}-linux-x64.tar.gz")
 
         # install a new local copy of the requested nodejs executable bundle
-        system(f"wget {DISTRIBUTION_URL}v{versionNumber}/node-v{versionNumber}-linux-x64.tar.gz")
-        system(f"tar -xvzf node-v{versionNumber}-linux-x64.tar.gz")
-        system(f"rm node-v{versionNumber}-linux-x64.tar.gz")
+        system(f"wget {DISTRIBUTION_URL}v{versionNumber}/node-v{versionNumber}-linux-x64.tar.gz -O /tmp/node-v{versionNumber}-linux-x64.tar.gz")
+        system(f"sudo tar -xzf /tmp/node-v{versionNumber}-linux-x64.tar.gz")
+        system(f"sudo rm /tmp/node-v{versionNumber}-linux-x64.tar.gz")
 
         # remove existing node executable version
         if fileExists(f"/usr/bin/{nodejsPATHExec}"):
@@ -51,9 +51,9 @@ def installVersion(versionNumber, nodejsPATHExec = "nodejs"):
         
         # nodejs executable will always be in /opt/ directory
         system(f"sudo mv node-v{versionNumber}-linux-x64 /opt/nodejs")
-        
+
         # copy the downloaded node version to PATH
-        if (DIRECT_CALLING):
+        if DIRECT_CALLING:
             system(f"sudo cp /opt/nodejs/bin/node /usr/bin/{nodejsPATHExec}")
         else:
             system(f"sudo ln -s /opt/nodejs/bin/node /usr/bin/{nodejsPATHExec}")

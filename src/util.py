@@ -1,4 +1,4 @@
-import os
+from os.path import exists
 
 # this is called when the user adds the --help flag
 # or does not call with a valid version
@@ -20,7 +20,8 @@ def printHelp():
     exit
 
 def printError(message = "", fatal = True):
-    if message == "": message = "An unknown error occured..."
+    if message == "":
+        message = "An unknown error occured..."
 
 
     print(f"{'Fatal ' if fatal else ''}Error!")
@@ -28,5 +29,6 @@ def printError(message = "", fatal = True):
     exit
 
 def fileExists(filepath):
-    if filepath == None or filepath == "": printError("Please provide a valid file path.")
-    return os.path.isfile(filepath)
+    if filepath == None or filepath == "":
+        printError("Please provide a valid file path.")
+    return exists(filepath)
