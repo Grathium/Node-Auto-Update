@@ -5,7 +5,7 @@ This originally started off as a project to automatically update nodejs, but has
 ---
   
 **Usage:**  
-`$ python3 ./main.py (version)  `  
+`$ python3 ./nodejs_update.py (version) [Optional Flags]`  
 Options for version: {latest, version number}  
   
 Optional CLA Flags:  
