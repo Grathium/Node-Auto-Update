@@ -56,6 +56,6 @@ deactivate_python() {
 
 activate_python;
 
-python3 ./src/nodejs_update latest;
+python3 ./src/nodejs_update.py latest;
 
 deactivate_python;

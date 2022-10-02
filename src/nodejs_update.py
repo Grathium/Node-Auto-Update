@@ -39,10 +39,6 @@ def installVersion(versionNumber, nodejsPATHExec = "nodejs"):
 
         # install a new local copy of the requested nodejs executable bundle
         system(f"wget {DISTRIBUTION_URL}v{versionNumber}/node-v{versionNumber}-linux-x64.tar.gz")
-        # check that the download was successfull
-        if not fileExists("node-v{versionNumber}-linux-x64.tar.gz"):
-            printError("Unable to download requested nodejs version from {DISTRIBUTION_URL}...")
-
         system(f"tar -xvzf node-v{versionNumber}-linux-x64.tar.gz")
         system(f"rm node-v{versionNumber}-linux-x64.tar.gz")
 
