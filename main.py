@@ -61,7 +61,7 @@ def printHelp():
     Options for version: latest
                          [version number]
     
-    Optional Flags:
+    Optional Flags (after [version]):
         --overwrite-node
         This will overwrite your node execuatable. By default, NodeJS-Update creates a new NodeJS executable under the exec PATH name nodejs.
         This will flag will instead replace node in your PATH. Use with caution.
@@ -78,6 +78,13 @@ if __name__ == "__main__":
         nodeVersion = getNodeVersion(LTS = True)
     else:
         nodeVersion = sys.argv[1]
+    
+    shouldOverwriteNode = True if sys.argv[2] == "--overwrite-node" else False
+    shouldForce = True if sys.argv[3] == "--force" else False
+
+    if (shouldForce):
+        print("Using --force")
+        print("I hope you know what you are doing.")
 
     # check if the version could be fetched
     if (nodeVersion == 'Error'):
@@ -85,7 +92,7 @@ if __name__ == "__main__":
         exit()
     
     print(f"Installing NodeJS Version {nodeVersion}")
-    installVersion(nodeVersion, overwriteNode = False)
+    installVersion(nodeVersion, overwriteNode = shouldOverwriteNode)
 
     print("")
     print("NodeJS installation complete")
