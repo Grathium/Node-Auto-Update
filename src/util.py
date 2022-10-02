@@ -24,7 +24,7 @@ def printError(message = "", fatal = True):
         message = "An unknown error occured..."
 
 
-    print(f"{'Fatal ' if fatal else ''}Error!")
+    print(f"\n{'Fatal ' if fatal else ''}Error!")
     print(message)
     exit
 

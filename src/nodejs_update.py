@@ -1,3 +1,4 @@
+from ensurepip import version
 import sys
 import requests
 import re
@@ -29,9 +30,9 @@ def getNodeVersion(LTS = False):
 
 # install the most recent NodeJS version
 def installVersion(versionNumber, nodejsPATHExec = "nodejs"):
-    currentVersion = popen(f"{nodejsPATHExec} --version").read()[1:]
+    currentVersion = popen(f"{nodejsPATHExec} --version").read()[1:].replace("\n", "")
 
-    # install nodejs version
+    # check that the requested version does not match the current version
     if currentVersion != versionNumber:
         # remove artifacts from previous installs
         if fileExists(f"/tmp/node-v{versionNumber}-linux-x64.tar.gz"):
@@ -39,6 +40,10 @@ def installVersion(versionNumber, nodejsPATHExec = "nodejs"):
 
         # install a new local copy of the requested nodejs executable bundle
         system(f"wget {DISTRIBUTION_URL}v{versionNumber}/node-v{versionNumber}-linux-x64.tar.gz -O /tmp/node-v{versionNumber}-linux-x64.tar.gz")
+
+        if not fileExists("/tmp/node-v{versionNumber}-linux-x64.tar.gz"):
+            printError(f"Fetching NodeJS from {DISTRIBUTION_URL}")
+
         system(f"sudo tar -xzf /tmp/node-v{versionNumber}-linux-x64.tar.gz")
         system(f"sudo rm /tmp/node-v{versionNumber}-linux-x64.tar.gz")
 
@@ -52,13 +57,19 @@ def installVersion(versionNumber, nodejsPATHExec = "nodejs"):
         # nodejs executable will always be in /opt/ directory
         system(f"sudo mv node-v{versionNumber}-linux-x64 /opt/nodejs")
 
+        if not fileExists("/opt/nodejs/bin/node"):
+            printError("Copying NodeJS to /opt")
+
         # copy the downloaded node version to PATH
         if DIRECT_CALLING:
             system(f"sudo cp /opt/nodejs/bin/node /usr/bin/{nodejsPATHExec}")
         else:
             system(f"sudo ln -s /opt/nodejs/bin/node /usr/bin/{nodejsPATHExec}")
+
+        if not fileExists(f"/usr/bin/{nodejsPATHExec}"):
+            printError("Creating PATH link")
     else:
-        print("NodeJS is currently up to date")
+        printError("NodeJS is currently up to date", fatal=False)
 
 if __name__ == "__main__":
     # CLA argument defaults
