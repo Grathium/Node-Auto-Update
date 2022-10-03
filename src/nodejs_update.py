@@ -86,10 +86,8 @@ if __name__ == "__main__":
     else:
         nodeVersion = sys.argv[1]
 
-    if len(sys.argv) > 2:
-        nodejsPATHExec = "node" if sys.argv[2] == "--overwrite-node" else "nodejs"
-    if len(sys.argv) > 3:
-        shouldForce = True if sys.argv[3] == "--force" else False
+    nodejsPATHExec = "node" if "--overwrite-node" in sys.argv else "nodejs"
+    shouldForce = True if "--force" in sys.argv else False
 
     if shouldForce:
         print("Using --force")
