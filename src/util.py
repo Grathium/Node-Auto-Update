@@ -30,5 +30,12 @@ def printError(message = "", fatal = True):
 
 def fileExists(filepath):
     if filepath == None or filepath == "":
-        printError("Please provide a valid file path.")
+        printError("Please provide a valid file path for fileExists().")
     return exists(filepath)
+
+def readFile(fileName):
+    if fileName == None or fileName == "":
+        printError("Please provide a valid file path for readFile().")
+    
+    with open("README.md") as file:
+        return file.readlines()

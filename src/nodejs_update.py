@@ -76,6 +76,12 @@ if __name__ == "__main__":
     shouldForce = 0
     nodejsPATHExec = "nodejs"
 
+    if "--help" in sys.argv:
+        helpDocs = readFile("README.md")
+        for line in helpDocs:
+            print(line)
+        exit(2)
+
     # get user specified CLA flags
     if len(sys.argv) == 1:
         printHelp()
