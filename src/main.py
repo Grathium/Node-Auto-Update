@@ -1,4 +1,3 @@
-from ensurepip import version
 import sys
 import requests
 import re
@@ -11,8 +10,9 @@ from util import *
 DIRECT_CALLING = False
 DISTRIBUTION_URL = "https://nodejs.org/dist/"
 
+
 # get the most recent NodeJS version from the website
-def getNodeVersion(LTS = False):
+def getNodeVersion(LTS=False):
     r = requests.get("https://nodejs.org/en/download/releases/")
     if r.status_code == 200:
         try:
@@ -24,12 +24,13 @@ def getNodeVersion(LTS = False):
 
             return nodeVersion
         except:
-            return "Error"
+            raise Exception("Could not parse NodeJS version")
     else:
-        return "Error"
+        raise Exception("Could not parse NodeJS version")
+
 
 # install the most recent NodeJS version
-def installVersion(versionNumber, nodejsPATHExec = "nodejs"):
+def installVersion(versionNumber, nodejsPATHExec="nodejs"):
     currentVersion = popen(f"{nodejsPATHExec} --version").read()[1:].replace("\n", "")
 
     # check that the requested version does not match the current version
@@ -39,7 +40,9 @@ def installVersion(versionNumber, nodejsPATHExec = "nodejs"):
             remove(f"/tmp/node-v{versionNumber}-linux-x64.tar.gz")
 
         # install a new local copy of the requested nodejs executable bundle
-        system(f"wget {DISTRIBUTION_URL}v{versionNumber}/node-v{versionNumber}-linux-x64.tar.gz -O /tmp/node-v{versionNumber}-linux-x64.tar.gz")
+        system(
+            f"wget {DISTRIBUTION_URL}v{versionNumber}/node-v{versionNumber}-linux-x64.tar.gz -O /tmp/node-v{versionNumber}-linux-x64.tar.gz"
+        )
 
         if not fileExists("/tmp/node-v{versionNumber}-linux-x64.tar.gz"):
             printError(f"Fetching NodeJS from {DISTRIBUTION_URL}")
@@ -53,7 +56,7 @@ def installVersion(versionNumber, nodejsPATHExec = "nodejs"):
 
         if fileExists(f"/opt/{nodejsPATHExec}"):
             system(f"sudo rm -r /opt/{nodejsPATHExec}")
-        
+
         # nodejs executable will always be in /opt/ directory
         system(f"sudo mv node-v{versionNumber}-linux-x64 /opt/nodejs")
 
@@ -71,7 +74,8 @@ def installVersion(versionNumber, nodejsPATHExec = "nodejs"):
     else:
         printError("NodeJS is currently up to date", fatal=False)
 
-if __name__ == "__main__":
+
+def main():
     # CLA argument defaults
     shouldForce = 0
     nodejsPATHExec = "nodejs"
@@ -88,7 +92,7 @@ if __name__ == "__main__":
         exit()
 
     if sys.argv[1] == "latest":
-        nodeVersion = getNodeVersion(LTS = True)
+        nodeVersion = getNodeVersion(LTS=True)
     else:
         nodeVersion = sys.argv[1]
 
@@ -99,15 +103,14 @@ if __name__ == "__main__":
         print("Using --force")
         print("I hope you know what you are doing.")
 
-    # check if the version could be fetched
-    if nodeVersion == "Error":
-        print("Could not fetch NodeJS version")
-        exit()
-    
     print(f"Installing NodeJS Version {nodeVersion}")
-    installVersion(nodeVersion, nodejsPATHExec = nodejsPATHExec)
+    installVersion(nodeVersion, nodejsPATHExec=nodejsPATHExec)
 
     print("")
     print("NodeJS installation complete")
     print("Installed as nodejs, check by running")
     print(f"$ {nodejsPATHExec} --version")
+
+
+if __name__ == "__main__":
+    main()

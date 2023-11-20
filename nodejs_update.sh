@@ -65,6 +65,8 @@ activate_python() {
             source ./venv/Scripts/activate;
         fi
     fi
+
+    clear;
 }
 
 # call this at the end of your program to deactivate the python3 virtual environment
@@ -91,7 +93,9 @@ main() {
   init_environment;
 
   activate_python;
+
   python3 ./src/main.py $@;
+
   deactivate_python;
 }
 
