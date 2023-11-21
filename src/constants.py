@@ -1,6 +1,5 @@
 VERSION: str = "0.1.1"
-HELP_PAGE_CONTENT: str = """
-NodeJS Auto Update
+HELP_PAGE_CONTENT: str = """NodeJS Auto Update
 
 Usage: nodejs_update.sh [version] <options>
 Options for version: [latest | version]

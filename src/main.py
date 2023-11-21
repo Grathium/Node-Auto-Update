@@ -2,7 +2,7 @@ import sys
 import requests
 import re
 from os import system, remove, popen
-from util import fileExists, readFile, printHelp
+from util import fileExists, printVersion, readFile, printHelp
 
 # if false: nodejs is added to PATH via link
 # if True: nodejs is added by adding the direct executable to the PATH
@@ -85,15 +85,10 @@ def main():
     shouldForce = False
     nodejsPathExec = "nodejs"
 
-    if "--help" in sys.argv:
-        helpDocs = readFile("README.md")
-        for line in helpDocs:
-            print(line)
-        exit(2)
-
-    # get user specified CLA flags
-    if len(sys.argv) == 1:
+    if "--help" in sys.argv or len(sys.argv) == 1:
         printHelp()
+    elif "--version" in sys.argv:
+        printVersion()
 
     nodejsPathExec = "node" if "--overwrite-node" in sys.argv else "nodejs"
     shouldForce = True if "--force" in sys.argv else False

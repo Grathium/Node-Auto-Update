@@ -1,12 +1,16 @@
 from os.path import exists
 from typing import NoReturn
-from constants import HELP_PAGE_CONTENT
+from constants import HELP_PAGE_CONTENT, VERSION
 
 
 def printHelp() -> NoReturn:
     print(HELP_PAGE_CONTENT)
-    exit(1)
+    exit(0)
 
+
+def printVersion() -> NoReturn:
+    print(VERSION)
+    exit(0)
 
 def fileExists(filepath: str) -> bool:
     if filepath == None or filepath == "":
