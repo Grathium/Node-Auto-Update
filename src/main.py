@@ -18,8 +18,12 @@ def getLatestNodeVersion():
             siteText = r.text
 
             # get the most recent version
-            matchRE = r'<td data-label="Version">Node.js (.+)</td>'
+            # data-label="Version">Node.js <!-- -->13.14.0</td>
+            matchRE = r'<td data-label="Version">Node.js <\!\-\- \-\->(.+)</td>'
             nodeVersion = re.search(matchRE, siteText).group(1)
+
+            # remove everything after the first "<"
+            nodeVersion = nodeVersion.split("<")[0]
 
             return nodeVersion
         except:
