@@ -1,41 +1,22 @@
 from os.path import exists
-
-# this is called when the user adds the --help flag
-# or does not call with a valid version
-def printHelp():
-    helpPage = """
-    Help page for Python Auto Update (PAU)
-
-    Usage: python3 ./nodejs_update.py [version] [optional flags]
-    Options for version: latest
-                         [version number]
-    
-    Optional Flags (after [version]):
-        --overwrite-node
-        This will overwrite your node execuatable. By default, NodeJS-Update creates a new NodeJS executable under the exec PATH name nodejs.
-        This will flag will instead replace node in your PATH. Use with caution.
-    """
-
-    print(helpPage)
-    exit
-
-def printError(message = "", fatal = True):
-    if message == "":
-        message = "An unknown error occured..."
+from typing import NoReturn
+from constants import HELP_PAGE_CONTENT
 
 
-    print(f"\n{'Fatal ' if fatal else ''}Error!")
-    print(message)
-    exit
+def printHelp() -> NoReturn:
+    print(HELP_PAGE_CONTENT)
+    exit(1)
 
-def fileExists(filepath):
+
+def fileExists(filepath: str) -> bool:
     if filepath == None or filepath == "":
-        printError("Please provide a valid file path for fileExists().")
+        raise Exception("Please provide a valid file path for fileExists().")
     return exists(filepath)
 
-def readFile(fileName):
+
+def readFile(fileName: str) -> list[str]:
     if fileName == None or fileName == "":
-        printError("Please provide a valid file path for readFile().")
-    
+        raise Exception("Please provide a valid file path for readFile().")
+
     with open("README.md") as file:
         return file.readlines()

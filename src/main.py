@@ -2,8 +2,7 @@ import sys
 import requests
 import re
 from os import system, remove, popen
-
-from util import *
+from util import fileExists, readFile, printHelp
 
 # if false: nodejs is added to PATH via link
 # if True: nodejs is added by adding the direct executable to the PATH
@@ -12,7 +11,7 @@ DISTRIBUTION_URL = "https://nodejs.org/dist/"
 
 
 # get the most recent NodeJS version from the website
-def getNodeVersion(LTS=False):
+def getLatestNodeVersion():
     r = requests.get("https://nodejs.org/en/download/releases/")
     if r.status_code == 200:
         try:
@@ -30,11 +29,11 @@ def getNodeVersion(LTS=False):
 
 
 # install the most recent NodeJS version
-def installVersion(versionNumber, nodejsPATHExec="nodejs"):
+def installVersion(versionNumber, nodejsPATHExec="nodejs", forceInstall=False):
     currentVersion = popen(f"{nodejsPATHExec} --version").read()[1:].replace("\n", "")
 
     # check that the requested version does not match the current version
-    if currentVersion != versionNumber:
+    if currentVersion != versionNumber or forceInstall:
         # remove artifacts from previous installs
         if fileExists(f"/tmp/node-v{versionNumber}-linux-x64.tar.gz"):
             remove(f"/tmp/node-v{versionNumber}-linux-x64.tar.gz")
@@ -45,7 +44,7 @@ def installVersion(versionNumber, nodejsPATHExec="nodejs"):
         )
 
         if not fileExists("/tmp/node-v{versionNumber}-linux-x64.tar.gz"):
-            printError(f"Fetching NodeJS from {DISTRIBUTION_URL}")
+            raise Exception(f"Fetching NodeJS from {DISTRIBUTION_URL}")
 
         system(f"sudo tar -xzf /tmp/node-v{versionNumber}-linux-x64.tar.gz")
         system(f"sudo rm /tmp/node-v{versionNumber}-linux-x64.tar.gz")
@@ -61,7 +60,7 @@ def installVersion(versionNumber, nodejsPATHExec="nodejs"):
         system(f"sudo mv node-v{versionNumber}-linux-x64 /opt/nodejs")
 
         if not fileExists("/opt/nodejs/bin/node"):
-            printError("Copying NodeJS to /opt")
+            raise Exception("Copying NodeJS to /opt")
 
         # copy the downloaded node version to PATH
         if DIRECT_CALLING:
@@ -70,15 +69,17 @@ def installVersion(versionNumber, nodejsPATHExec="nodejs"):
             system(f"sudo ln -s /opt/nodejs/bin/node /usr/bin/{nodejsPATHExec}")
 
         if not fileExists(f"/usr/bin/{nodejsPATHExec}"):
-            printError("Creating PATH link")
+            raise Exception("Creating PATH link")
     else:
-        printError("NodeJS is currently up to date", fatal=False)
+        raise Exception("NodeJS is currently up to date")
 
 
 def main():
+    print()
+
     # CLA argument defaults
-    shouldForce = 0
-    nodejsPATHExec = "nodejs"
+    shouldForce = False
+    nodejsPathExec = "nodejs"
 
     if "--help" in sys.argv:
         helpDocs = readFile("README.md")
@@ -89,27 +90,25 @@ def main():
     # get user specified CLA flags
     if len(sys.argv) == 1:
         printHelp()
-        exit()
 
-    if sys.argv[1] == "latest":
-        nodeVersion = getNodeVersion(LTS=True)
-    else:
-        nodeVersion = sys.argv[1]
-
-    nodejsPATHExec = "node" if "--overwrite-node" in sys.argv else "nodejs"
+    nodejsPathExec = "node" if "--overwrite-node" in sys.argv else "nodejs"
     shouldForce = True if "--force" in sys.argv else False
 
     if shouldForce:
-        print("Using --force")
-        print("I hope you know what you are doing.")
+        print("\033[33;1;4mUsing --force\033[0m\n")
+
+    if sys.argv[1] == "latest":
+        nodeVersion = getLatestNodeVersion()
+    else:
+        nodeVersion = sys.argv[1]
 
     print(f"Installing NodeJS Version {nodeVersion}")
-    installVersion(nodeVersion, nodejsPATHExec=nodejsPATHExec)
+    installVersion(nodeVersion, nodejsPATHExec=nodejsPathExec, forceInstall=shouldForce)
 
     print("")
     print("NodeJS installation complete")
     print("Installed as nodejs, check by running")
-    print(f"$ {nodejsPATHExec} --version")
+    print(f"$ {nodejsPathExec} --version")
 
 
 if __name__ == "__main__":
